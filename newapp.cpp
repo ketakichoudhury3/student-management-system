@@ -1,377 +1,196 @@
-/*
------------------------------------------
-STUDENT MANAGEMENT SYSTEM
-Internship Project in C++
-
-Developed By:
-Your Name ketaki choudhury
-
-Concepts Used:
-- Classes & Objects
-- File Handling
-- Functions
-- CRUD Operations
-- Menu Driven Program
------------------------------------------
-*/
-
 #include <iostream>
+#include <string>
 #include <fstream>
-#include <sstream>
+
 using namespace std;
 
-class Student
+class BankAccount
 {
 public:
-    int rollNo;
-    string name;
-    int age;
-    string course;
-    float marks;
+    int accountNumber;
+    string customerName;
+    float balance;
 
-    // Add Student
-    void addStudent()
+    void createAccount()
     {
-        cout << "\nEnter Roll Number: ";
-        cin >> rollNo;
-
-        // Check Duplicate Roll Number
-        ifstream checkFile("students.txt");
-
-        string line;
-
-        while(getline(checkFile, line))
-        {
-            stringstream ss(line);
-            string roll;
-
-            getline(ss, roll, '|');
-
-            if(stoi(roll) == rollNo)
-            {
-                cout << "\nRoll Number Already Exists!\n";
-                checkFile.close();
-                return;
-            }
-        }
-
-        checkFile.close();
-
-        ofstream file("students.txt", ios::app);
+        cout << "\nEnter Account Number: ";
+        cin >> accountNumber;
 
         cin.ignore();
 
-        cout << "Enter Name: ";
-        getline(cin, name);
+        cout << "Enter Customer Name: ";
+        getline(cin, customerName);
 
-        cout << "Enter Age: ";
-        cin >> age;
+        cout << "Enter Initial Balance: ";
+        cin >> balance;
 
-        cin.ignore();
-
-        cout << "Enter Course: ";
-        getline(cin, course);
-
-        cout << "Enter Marks: ";
-        cin >> marks;
-
-        file << rollNo << "|"
-             << name << "|"
-             << age << "|"
-             << course << "|"
-             << marks << endl;
-
-        file.close();
-
-        cout << "\nStudent Added Successfully!\n";
+        cout << "\nAccount Created Successfully!\n";
     }
 
-    // Display Students
-    void displayStudents()
+    void displayAccount()
     {
-        ifstream file("students.txt");
-
-        if(!file)
-        {
-            cout << "\nNo Records Found!\n";
-            return;
-        }
-
-        string line;
-
-        cout << "\n====================================";
-        cout << "\n        STUDENT RECORDS";
-        cout << "\n====================================";
-
-        while(getline(file, line))
-        {
-            stringstream ss(line);
-
-            string roll, studentName, studentAge, studentCourse, studentMarks;
-            getline(ss, roll, '|');
-            getline(ss, studentName, '|');
-            getline(ss, studentAge, '|');
-            getline(ss, studentCourse, '|');
-            getline(ss, studentMarks, '|');
-
-            cout << "\n\nRoll Number : " << roll;
-            cout << "\nName        : " << studentName;
-            cout << "\nAge         : " << studentAge;
-            cout << "\nCourse      : " << studentCourse;
-            cout << "\nMarks       : " << studentMarks;
-            cout << "\n------------------------------------";
-        }
-
-        file.close();
-    }
-
-    // Search Student
-    void searchStudent()
-    {
-        ifstream file("students.txt");
-
-        if(!file)
-        {
-            cout << "\nNo Records Found!\n";
-            return;
-        }
-
-        int searchRoll;
-        bool found = false;
-
-        cout << "\nEnter Roll Number to Search: ";
-        cin >> searchRoll;
-
-        string line;
-
-        while(getline(file, line))
-        {
-            stringstream ss(line);
-
-            string roll, studentName, studentAge, studentCourse, studentMarks;
-
-            getline(ss, roll, '|');
-            getline(ss, studentName, '|');
-            getline(ss, studentAge, '|');
-            getline(ss, studentCourse, '|');
-            getline(ss, studentMarks, '|');
-
-            if(stoi(roll) == searchRoll)
-            {
-                cout << "\n====================================";
-                cout << "\n         STUDENT FOUND";
-                cout << "\n====================================";
-
-                cout << "\nRoll Number : " << roll;
-                cout << "\nName        : " << studentName;
-                cout << "\nAge         : " << studentAge;
-                cout << "\nCourse      : " << studentCourse;
-                cout << "\nMarks       : " << studentMarks;
-
-                found = true;
-                break;
-            }
-        }
-
-        if(!found)
-        {
-            cout << "\nStudent Not Found!\n";
-        }
-
-        file.close();
-    }
-
-    // Update Student
-    void updateStudent()
-    {
-        ifstream file("students.txt");
-
-        if(!file)
-        {
-            cout << "\nNo Records Found!\n";
-            return;
-        }
-
-        ofstream tempFile("temp.txt");
-
-        int updateRoll;
-        bool found = false;
-
-        cout << "\nEnter Roll Number to Update: ";
-        cin >> updateRoll;
-
-        string line;
-
-        while(getline(file, line))
-        {
-            stringstream ss(line);
-
-            string roll, studentName, studentAge, studentCourse, studentMarks;
-
-            getline(ss, roll, '|');
-            getline(ss, studentName, '|');
-            getline(ss, studentAge, '|');
-            getline(ss, studentCourse, '|');
-            getline(ss, studentMarks, '|');
-
-            if(stoi(roll) == updateRoll)
-            {
-                found = true;
-
-                cin.ignore();
-
-                cout << "\nEnter New Name: ";
-                getline(cin, name);
-
-                cout << "Enter New Age: ";
-                cin >> age;
-
-                cin.ignore();
-
-                cout << "Enter New Course: ";
-                getline(cin, course);
-
-                cout << "Enter New Marks: ";
-                cin >> marks;
-
-                tempFile << updateRoll << "|"
-                         << name << "|"
-                         << age << "|"
-                         << course << "|"
-                         << marks << endl;
-
-                cout << "\nRecord Updated Successfully!\n";
-            }
-            else
-            {
-                tempFile << line << endl;
-            }
-        }
-
-        file.close();
-        tempFile.close();
-
-        remove("students.txt");
-        rename("temp.txt", "students.txt");
-
-        if(!found)
-        {
-            cout << "\nStudent Not Found!\n";
-        }
-    }
-
-    // Delete Student
-    void deleteStudent()
-    {
-        ifstream file("students.txt");
-
-        if(!file)
-        {
-            cout << "\nNo Records Found!\n";
-            return;
-        }
-
-        ofstream tempFile("temp.txt");
-
-        int deleteRoll;
-        bool found = false;
-
-        cout << "\nEnter Roll Number to Delete: ";
-        cin >> deleteRoll;
-
-        string line;
-
-        while(getline(file, line))
-        {
-            stringstream ss(line);
-
-            string roll, studentName, studentAge, studentCourse, studentMarks;
-
-            getline(ss, roll, '|');
-            getline(ss, studentName, '|');
-            getline(ss, studentAge, '|');
-            getline(ss, studentCourse, '|');
-            getline(ss, studentMarks, '|');
-
-            if(stoi(roll) == deleteRoll)
-            {
-                found = true;
-                cout << "\nRecord Deleted Successfully!\n";
-            }
-            else
-            {
-                tempFile << line << endl;
-            }
-        }
-
-        file.close();
-        tempFile.close();
-
-        remove("students.txt");
-        rename("temp.txt", "students.txt");
-
-        if(!found)
-        {
-            cout << "\nStudent Not Found!\n";
-        }
+        cout << "\n--------------------------------";
+        cout << "\nAccount Number : " << accountNumber;
+        cout << "\nCustomer Name  : " << customerName;
+        cout << "\nBalance        : " << balance;
+        cout << "\n--------------------------------\n";
     }
 };
 
-// Menu Function
-void menu()
+BankAccount accounts[100];
+int totalAccounts = 0;
+
+void createNewAccount()
 {
-    cout << "\n====================================";
-    cout << "\n     STUDENT MANAGEMENT SYSTEM";
-    cout << "\n====================================";
-    cout << "\n1. Add Student";
-    cout << "\n2. Display Students";
-    cout << "\n3. Search Student";
-    cout << "\n4. Update Student";
-    cout << "\n5. Delete Student";
-    cout << "\n6. Exit";
-    cout << "\n====================================";
-    cout << "\nEnter Your Choice: ";
+    accounts[totalAccounts].createAccount();
+    totalAccounts++;
 }
 
-// Main Function
+void displayAllAccounts()
+{
+    if (totalAccounts == 0)
+    {
+        cout << "\nNo Accounts Available!\n";
+        return;
+    }
+
+    for (int i = 0; i < totalAccounts; i++)
+    {
+        accounts[i].displayAccount();
+    }
+}
+
+void depositMoney()
+{
+    int accNo;
+    float amount;
+    bool found = false;
+
+    cout << "\nEnter Account Number: ";
+    cin >> accNo;
+
+    for (int i = 0; i < totalAccounts; i++)
+    {
+        if (accounts[i].accountNumber == accNo)
+        {
+            found = true;
+
+            cout << "Enter Deposit Amount: ";
+            cin >> amount;
+
+            accounts[i].balance += amount;
+
+            cout << "\nMoney Deposited Successfully!\n";
+        }
+    }
+
+    if (!found)
+    {
+        cout << "\nAccount Not Found!\n";
+    }
+}
+
+void withdrawMoney()
+{
+    int accNo;
+    float amount;
+    bool found = false;
+
+    cout << "\nEnter Account Number: ";
+    cin >> accNo;
+
+    for (int i = 0; i < totalAccounts; i++)
+    {
+        if (accounts[i].accountNumber == accNo)
+        {
+            found = true;
+
+            cout << "Enter Withdraw Amount: ";
+            cin >> amount;
+
+            if (amount <= accounts[i].balance)
+            {
+                accounts[i].balance -= amount;
+
+                cout << "\nMoney Withdrawn Successfully!\n";
+            }
+            else
+            {
+                cout << "\nInsufficient Balance!\n";
+            }
+        }
+    }
+
+    if (!found)
+    {
+        cout << "\nAccount Not Found!\n";
+    }
+}
+
+void saveDataToFile()
+{
+    ofstream file("bankdata.txt");
+
+    for (int i = 0; i < totalAccounts; i++)
+    {
+        file << accounts[i].accountNumber << endl;
+        file << accounts[i].customerName << endl;
+        file << accounts[i].balance << endl;
+    }
+
+    file.close();
+
+    cout << "\nData Saved Successfully!\n";
+}
+
 int main()
 {
-    Student s;
     int choice;
 
     do
     {
-        menu();
+        cout << "\n======================================";
+        cout << "\n       BANK MANAGEMENT SYSTEM";
+        cout << "\n======================================";
+
+        cout << "\n1. Create Account";
+        cout << "\n2. Deposit Money";
+        cout << "\n3. Withdraw Money";
+        cout << "\n4. Check Balance";
+        cout << "\n5. Save Data";
+        cout << "\n6. Exit";
+
+        cout << "\n\nEnter Your Choice: ";
         cin >> choice;
 
         switch(choice)
         {
             case 1:
-                s.addStudent();
+                createNewAccount();
                 break;
 
             case 2:
-                s.displayStudents();
+                depositMoney();
                 break;
 
             case 3:
-                s.searchStudent();
+                withdrawMoney();
                 break;
 
             case 4:
-                s.updateStudent();
+                displayAllAccounts();
                 break;
 
             case 5:
-                s.deleteStudent();
+                saveDataToFile();
                 break;
 
             case 6:
-                cout << "\nThank You For Using Student Management System!\n";
+                cout << "\nThank You for Using Bank Management System!\n";
                 break;
 
             default:
-                cout << "\nInvalid Choice! Please Try Again.\n";
+                cout << "\nInvalid Choice!\n";
         }
 
     } while(choice != 6);
